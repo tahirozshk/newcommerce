@@ -25,8 +25,27 @@
     scroll-behavior: smooth;
 }
 
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+}
+
 body {
     font-family: var(--font-sans);
+    position: relative;
+}
+
+/* Prevent horizontal scroll from images and containers */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+section {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Animations */
@@ -60,13 +79,25 @@ body {
     transition-duration: 300ms;
 }
 
-/* Container utility */
+/* Hide scrollbar for thumbnail slider */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Container utility - Prevent horizontal scroll */
 .container {
     width: 100%;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem;
     padding-right: 1rem;
+    box-sizing: border-box;
 }
 
 @media (min-width: 640px) {

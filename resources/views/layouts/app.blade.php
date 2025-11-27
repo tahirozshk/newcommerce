@@ -14,10 +14,10 @@
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-white antialiased">
+<body class="bg-white antialiased overflow-x-hidden">
     @include('components.header')
     
-    <main>
+    <main class="w-full overflow-x-hidden">
         @yield('content')
     </main>
     

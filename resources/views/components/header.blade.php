@@ -1,13 +1,14 @@
-<header class="sticky top-0 z-50 bg-white shadow-sm">
+<header class="sticky top-0 z-50 bg-white shadow-sm w-full overflow-x-hidden">
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-20">
             <!-- Logo -->
-            <div class="flex items-center">
+            <div class="flex items-center flex-shrink-0">
                 <a href="{{ route('home') }}" class="flex items-center">
                     <img 
                         src="{{ asset('logo.png') }}" 
                         alt="CYPRUS EXPRESS" 
-                        class="h-12 w-auto object-contain"
+                        class="h-10 max-h-10 max-w-[100px] w-auto object-contain"
+                        style="height: 40px !important; max-width: 100px !important;"
                     >
                 </a>
             </div>
@@ -15,9 +16,9 @@
             <!-- Navigation -->
             <nav class="hidden md:flex items-center gap-8">
                 <a href="{{ route('home') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">Home</a>
-                <a href="#categories" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">Categories</a>
-                <a href="#deals" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">Deals</a>
-                <a href="#new-arrivals" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">New Arrivals</a>
+                <a href="{{ route('categories') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">Categories</a>
+                <a href="{{ route('deals') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">Deals</a>
+                <a href="{{ route('new-arrivals') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium transition-colors">New Arrivals</a>
             </nav>
 
             <!-- Search Bar -->
@@ -52,12 +53,12 @@
                 </button>
 
                 <!-- Shopping Cart -->
-                <button class="relative p-2 text-gray-700 hover:text-[#FF6B35] transition-colors">
+                <a href="{{ route('cart') }}" class="relative p-2 text-gray-700 hover:text-[#FF6B35] transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    <span class="absolute top-0 right-0 w-4 h-4 bg-[#FF6B35] text-white text-xs rounded-full flex items-center justify-center">0</span>
-                </button>
+                    <span class="absolute top-0 right-0 w-4 h-4 bg-[#FF6B35] text-white text-xs rounded-full flex items-center justify-center">3</span>
+                </a>
 
                 <!-- Mobile Menu Button -->
                 <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700">
@@ -74,9 +75,9 @@
         <div class="container mx-auto px-4 py-4">
             <nav class="flex flex-col gap-4">
                 <a href="{{ route('home') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium">Home</a>
-                <a href="#categories" class="text-gray-700 hover:text-[#FF6B35] font-medium">Categories</a>
-                <a href="#deals" class="text-gray-700 hover:text-[#FF6B35] font-medium">Deals</a>
-                <a href="#new-arrivals" class="text-gray-700 hover:text-[#FF6B35] font-medium">New Arrivals</a>
+                <a href="{{ route('categories') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium">Categories</a>
+                <a href="{{ route('deals') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium">Deals</a>
+                <a href="{{ route('new-arrivals') }}" class="text-gray-700 hover:text-[#FF6B35] font-medium">New Arrivals</a>
             </nav>
         </div>
     </div>

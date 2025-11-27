@@ -1,4 +1,4 @@
-<footer class="bg-[#2E5C8A] text-white mt-20">
+<footer class="bg-[#2E5C8A] text-white mt-20 w-full overflow-x-hidden">
     <div class="container mx-auto px-4 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Brand Column -->
@@ -55,18 +55,18 @@
             </div>
 
             <!-- Newsletter -->
-            <div>
+            <div class="w-full min-w-0">
                 <h3 class="font-semibold text-lg mb-4">Newsletter</h3>
                 <p class="text-gray-300 text-sm mb-4">
                     Subscribe to get special offers and updates
                 </p>
-                <form class="flex gap-2">
+                <form class="flex flex-wrap gap-2 w-full max-w-full">
                     <input 
                         type="email" 
                         placeholder="Your email" 
-                        class="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]"
+                        class="flex-1 min-w-[120px] px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] max-w-full"
                     >
-                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-[#FF6B35] to-[#FF8FA3] rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    <button type="submit" class="px-6 py-2 bg-gradient-to-r from-[#FF6B35] to-[#FF8FA3] rounded-lg font-medium hover:opacity-90 transition-opacity whitespace-nowrap flex-shrink-0">
                         Subscribe
                     </button>
                 </form>

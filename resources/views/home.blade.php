@@ -29,15 +29,15 @@
                 </div>
 
                 <!-- Image -->
-                <div class="relative z-10">
+                <div class="relative z-10 overflow-hidden">
                     <div class="relative">
                         <img 
                             src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=600&fit=crop" 
                             alt="Tech Gadgets"
-                            class="rounded-2xl shadow-2xl"
+                            class="w-full h-auto rounded-2xl shadow-2xl max-w-full"
                         >
-                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-[#FFD93D] rounded-full opacity-20 blur-2xl"></div>
-                        <div class="absolute -top-4 -left-4 w-32 h-32 bg-[#4A90E2] rounded-full opacity-20 blur-2xl"></div>
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-[#FFD93D] rounded-full opacity-20 blur-2xl pointer-events-none"></div>
+                        <div class="absolute -top-4 -left-4 w-32 h-32 bg-[#4A90E2] rounded-full opacity-20 blur-2xl pointer-events-none"></div>
                     </div>
                 </div>
             </div>
