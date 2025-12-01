@@ -1,40 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Product Detail - CYPRUS EXPRESS')
+@section('title', ($product->name ?? 'Product Detail') . ' - CYPRUS EXPRESS')
 
 @section('content')
-    @php
-        // Sample product data - In real app, this would come from database
-        $product = [
-            'id' => $productId ?? 1,
-            'name' => 'Premium Wireless Headphones',
-            'price' => 299.99,
-            'original_price' => 399.99,
-            'discount' => 25,
-            'rating' => 4.8,
-            'reviews' => 124,
-            'category' => 'Electronics',
-            'badge' => 'Best Seller',
-            'description' => 'Experience premium sound quality with our wireless headphones. Featuring active noise cancellation, 30-hour battery life, and comfortable over-ear design. Perfect for music lovers and professionals alike.',
-            'features' => [
-                'Active Noise Cancellation',
-                '30-Hour Battery Life',
-                'Bluetooth 5.0',
-                'Comfortable Over-Ear Design',
-                'Premium Sound Quality',
-                'Quick Charge (5 min = 3 hours)'
-            ],
-            'images' => [
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop',
-                'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&h=800&fit=crop',
-                'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&h=800&fit=crop',
-                'https://images.unsplash.com/photo-1545127398-14699f92334b?w=800&h=800&fit=crop',
-                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&h=800&fit=crop',
-            ],
-            'in_stock' => true,
-            'stock_count' => 15,
-        ];
-    @endphp
 
     <!-- Breadcrumb -->
     <section class="bg-gray-50 py-4">
@@ -44,11 +12,13 @@
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
-                <a href="{{ route('categories') }}" class="text-gray-600 hover:text-[#FF6B35]">{{ $product['category'] }}</a>
+                <a href="{{ route('categories') }}" class="text-gray-600 hover:text-[#FF6B35]">
+                    {{ optional($product->category)->name ?? 'Category' }}
+                </a>
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
-                <span class="text-gray-900">{{ $product['name'] }}</span>
+                <span class="text-gray-900">{{ $product->name }}</span>
             </nav>
         </div>
     </section>
@@ -62,11 +32,11 @@
                     <!-- Main Image Slider -->
                     <div class="relative bg-gray-100 rounded-lg overflow-hidden mb-4" style="max-height: 550px;">
                         <div id="image-slider" class="relative h-[550px] overflow-hidden">
-                            @foreach($product['images'] as $index => $image)
+                            @foreach($product->images ?? [] as $index => $image)
                                 <div class="slider-image absolute inset-0 transition-opacity duration-500 {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" data-index="{{ $index }}">
                                     <img 
                                         src="{{ $image }}" 
-                                        alt="{{ $product['name'] }} - Image {{ $index + 1 }}"
+                                        alt="{{ $product->name }} - Image {{ $index + 1 }}"
                                         class="w-full h-full object-contain"
                                     >
                                 </div>
@@ -95,7 +65,7 @@
                         
                         <!-- Slide Indicators -->
                         <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-                            @foreach($product['images'] as $index => $image)
+                            @foreach($product->images ?? [] as $index => $image)
                                 <button 
                                     onclick="goToSlide({{ $index }})"
                                     class="slide-indicator w-2 h-2 rounded-full transition-all {{ $index === 0 ? 'bg-white w-6' : 'bg-white/50' }}"
@@ -107,7 +77,7 @@
                     <!-- Thumbnail Images Slider -->
                     <div class="relative mt-4">
                         <div id="thumbnail-slider" class="flex gap-3 overflow-x-auto scrollbar-hide pb-2 snap-x snap-mandatory min-h-[100px]" style="scrollbar-width: none; -ms-overflow-style: none;">
-                            @foreach($product['images'] as $index => $image)
+                            @foreach($product->images ?? [] as $index => $image)
                                 <button 
                                     onclick="goToSlide({{ $index }})"
                                     class="thumbnail-btn flex-shrink-0 aspect-square w-28 bg-gray-100 rounded-lg overflow-hidden border-2 snap-center cursor-pointer {{ $index === 0 ? 'border-[#FF6B35]' : 'border-transparent' }} hover:border-[#FF6B35] transition-colors"
@@ -127,37 +97,37 @@
                 <!-- Product Info -->
                 <div class="space-y-6">
                     <!-- Badge -->
-                    @if(isset($product['badge']))
+                    @if($product->badge)
                         <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-green-500 text-white">
-                            {{ $product['badge'] }}
+                            {{ $product->badge }}
                         </span>
                     @endif
 
                     <!-- Product Name -->
-                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ $product['name'] }}</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ $product->name }}</h1>
 
                     <!-- Rating -->
                     <div class="flex items-center gap-4">
                         <div class="flex items-center">
                             @for($i = 0; $i < 5; $i++)
-                                <svg class="w-5 h-5 {{ $i < floor($product['rating']) ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 {{ $i < floor($product->rating ?? 0) ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                 </svg>
                             @endfor
                         </div>
                         <span class="text-gray-600">
-                            <span class="font-semibold">{{ number_format($product['rating'], 1) }}</span>
-                            <span class="text-gray-400">({{ $product['reviews'] }} reviews)</span>
+                            <span class="font-semibold">{{ number_format($product->rating ?? 0, 1) }}</span>
+                            <span class="text-gray-400">({{ $product->reviews_count ?? 0 }} reviews)</span>
                         </span>
                     </div>
 
                     <!-- Price -->
                     <div class="flex items-baseline gap-4">
-                        <span class="text-4xl font-bold text-gray-900">${{ number_format($product['price'], 2) }}</span>
-                        @if(isset($product['original_price']) && $product['original_price'] > $product['price'])
-                            <span class="text-xl text-gray-400 line-through">${{ number_format($product['original_price'], 2) }}</span>
+                        <span class="text-4xl font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
+                        @if($product->original_price && $product->original_price > $product->price)
+                            <span class="text-xl text-gray-400 line-through">${{ number_format($product->original_price, 2) }}</span>
                             <span class="px-3 py-1 bg-red-100 text-red-600 text-sm font-semibold rounded-full">
-                                -{{ $product['discount'] }}%
+                                -{{ $product->discount }}%
                             </span>
                         @endif
                     </div>
@@ -165,14 +135,14 @@
                     <!-- Description -->
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
-                        <p class="text-gray-600 leading-relaxed">{{ $product['description'] }}</p>
+                        <p class="text-gray-600 leading-relaxed">{{ $product->description }}</p>
                     </div>
 
                     <!-- Features -->
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
                         <ul class="grid grid-cols-2 gap-2">
-                            @foreach($product['features'] as $feature)
+                            @foreach(($product->features ?? []) as $feature)
                                 <li class="flex items-center gap-2 text-gray-600">
                                     <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -183,39 +153,76 @@
                         </ul>
                     </div>
 
-                    <!-- Stock Status -->
-                    <div class="flex items-center gap-2">
-                        @if($product['in_stock'])
-                            <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                            <span class="text-green-600 font-medium">In Stock ({{ $product['stock_count'] }} available)</span>
-                        @else
-                            <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                            <span class="text-red-600 font-medium">Out of Stock</span>
-                        @endif
-                    </div>
+                        <!-- Stock Status -->
+                        <div class="flex items-center gap-2">
+                            @if($product->stock > 0)
+                                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                <span class="text-green-600 font-medium">In Stock ({{ $product->stock }} available)</span>
+                            @else
+                                <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                                <span class="text-red-600 font-medium">Out of Stock</span>
+                            @endif
+                        </div>
 
                     <!-- Quantity & Add to Cart -->
                     <div class="space-y-4 pt-4 border-t">
                         <div class="flex items-center gap-4">
-                            <label class="text-gray-700 font-medium">Quantity:</label>
+                            <label class="text-gray-700 font-medium" for="quantity">Quantity:</label>
                             <div class="flex items-center border border-gray-300 rounded-lg">
-                                <button onclick="decreaseQuantity()" class="px-4 py-2 hover:bg-gray-100 transition-colors">-</button>
-                                <input type="number" id="quantity" value="1" min="1" max="{{ $product['stock_count'] }}" class="w-16 text-center border-0 focus:ring-0">
-                                <button onclick="increaseQuantity()" class="px-4 py-2 hover:bg-gray-100 transition-colors">+</button>
+                                <button type="button" onclick="decreaseQuantity()" class="px-4 py-2 hover:bg-gray-100 transition-colors">-</button>
+                                <input type="number"
+                                       id="quantity"
+                                       name="quantity"
+                                       value="1"
+                                       min="1"
+                                       max="{{ $product->stock }}"
+                                       class="w-16 text-center border-0 focus:ring-0">
+                                <button type="button" onclick="increaseQuantity()" class="px-4 py-2 hover:bg-gray-100 transition-colors">+</button>
                             </div>
                         </div>
+                        
                         <div class="flex gap-4">
-                            <button class="flex-1 py-3 bg-gradient-to-r from-[#FF6B35] to-[#FF8FA3] text-white font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                                Add to Cart
-                            </button>
-                            <button class="px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] font-semibold rounded-lg hover:bg-[#FF6B35] hover:text-white transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                </svg>
-                            </button>
+                            <!-- Cart Button -->
+                            <form method="POST" action="{{ route('cart.add', ['product' => $product->id]) }}" class="flex-1" id="cart-form">
+                                @csrf
+                                <input type="hidden" name="quantity" id="cart-quantity" value="1">
+                                <button type="submit" class="w-full py-3 bg-gradient-to-r from-[#FF6B35] to-[#FF8FA3] text-white font-semibold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                            </form>
+                            
+                            <!-- Wishlist Button (Same row as Cart button) -->
+                            @auth
+                                @if($isInWishlist ?? false)
+                                    <form method="POST" action="{{ route('wishlist.remove', ['id' => $product->id]) }}" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-6 py-3 bg-[#FF6B35] text-white font-semibold rounded-lg hover:bg-[#FF8FA3] transition-colors">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form method="POST" action="{{ route('wishlist.add', ['id' => $product->id]) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] font-semibold rounded-lg hover:bg-[#FF6B35] hover:text-white transition-colors">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="px-6 py-3 border-2 border-[#FF6B35] text-[#FF6B35] font-semibold rounded-lg hover:bg-[#FF6B35] hover:text-white transition-colors inline-flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -228,15 +235,6 @@
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-gray-900 mb-8">Similar Products</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @php
-                    $similarProducts = [
-                        ['name' => 'Ultra Slim Laptop Pro', 'price' => 1299.99, 'rating' => 4.9, 'reviews' => 89, 'category' => 'Electronics', 'badge' => 'Hot Deal', 'discount' => 25, 'image' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop'],
-                        ['name' => 'Smart Watch Series X', 'price' => 399.99, 'rating' => 4.7, 'reviews' => 256, 'category' => 'Electronics', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop'],
-                        ['name' => 'Professional Camera Kit', 'price' => 899.99, 'rating' => 4.5, 'reviews' => 67, 'category' => 'Electronics', 'badge' => 'Limited Edition', 'discount' => 17, 'image' => 'https://images.unsplash.com/photo-1516035069371-86a097c516cf?w=300&h=300&fit=crop'],
-                        ['name' => 'Flagship Smartphone', 'price' => 999.99, 'rating' => 4.9, 'reviews' => 312, 'category' => 'Electronics', 'badge' => 'Best Seller', 'discount' => 10, 'image' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop'],
-                    ];
-                @endphp
-
                 @foreach($similarProducts as $product)
                     <x-product-card :product="$product" />
                 @endforeach
@@ -247,7 +245,7 @@
 
 @push('scripts')
 @php
-    $totalImages = count($product['images'] ?? []);
+    $totalImages = count($product->images ?? []);
 @endphp
 <script>
     let currentSlide = 0;
@@ -334,6 +332,7 @@
         const current = parseInt(input.value);
         if (current < max) {
             input.value = current + 1;
+            document.getElementById('cart-quantity').value = input.value;
         }
     }
 
@@ -342,8 +341,20 @@
         const current = parseInt(input.value);
         if (current > 1) {
             input.value = current - 1;
+            document.getElementById('cart-quantity').value = input.value;
         }
     }
+
+    // Update cart quantity when quantity input changes
+    document.getElementById('quantity').addEventListener('input', function() {
+        document.getElementById('cart-quantity').value = this.value;
+    });
+
+    // Update cart quantity on form submit
+    document.getElementById('cart-form').addEventListener('submit', function() {
+        const quantityInput = document.getElementById('quantity');
+        document.getElementById('cart-quantity').value = quantityInput.value;
+    });
 </script>
 @endpush
 

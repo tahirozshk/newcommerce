@@ -22,29 +22,28 @@
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-gray-900">Latest Products</h2>
                 <div class="flex gap-2">
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">All</button>
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">This Week</button>
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">This Month</button>
+                    <a href="{{ route('new-arrivals', ['sort' => 'newest']) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ request('sort', 'newest') == 'newest' ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">All</a>
+                    <a href="{{ route('new-arrivals', ['sort' => 'newest', 'period' => 'week']) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ request('period') == 'week' ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">This Week</a>
+                    <a href="{{ route('new-arrivals', ['sort' => 'newest', 'period' => 'month']) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ request('period') == 'month' ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">This Month</a>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @php
-                    $newArrivalsProducts = [
-                        ['name' => 'Gaming Console Pro', 'price' => 499.99, 'rating' => 4.8, 'reviews' => 156, 'category' => 'Electronics', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=300&h=300&fit=crop'],
-                        ['name' => 'Modern Indoor Plant Set', 'price' => 49.99, 'rating' => 4.4, 'reviews' => 78, 'category' => 'Home & Living', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=300&fit=crop'],
-                        ['name' => 'Adjustable Dumbbell Set', 'price' => 199.99, 'original_price' => 229.00, 'rating' => 4.8, 'reviews' => 203, 'category' => 'Sports', 'badge' => 'New Arrival', 'discount' => 15, 'image' => 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop'],
-                        ['name' => 'Smart Coffee Maker', 'price' => 149.99, 'rating' => 4.6, 'reviews' => 134, 'category' => 'Home & Living', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=300&h=300&fit=crop'],
-                        ['name' => 'Smart Watch Series X', 'price' => 399.99, 'rating' => 4.7, 'reviews' => 256, 'category' => 'Electronics', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop'],
-                        ['name' => 'Designer Sunglasses', 'price' => 159.99, 'rating' => 4.7, 'reviews' => 92, 'category' => 'Fashion', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300&h=300&fit=crop'],
-                        ['name' => 'Wireless Earbuds Pro', 'price' => 179.99, 'rating' => 4.9, 'reviews' => 287, 'category' => 'Electronics', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&h=300&fit=crop'],
-                        ['name' => 'Minimalist Desk Lamp', 'price' => 89.99, 'rating' => 4.5, 'reviews' => 112, 'category' => 'Home & Living', 'badge' => 'New Arrival', 'image' => 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&h=300&fit=crop'],
-                    ];
-                @endphp
-
-                @foreach($newArrivalsProducts as $product)
-                    <x-product-card :product="$product" />
-                @endforeach
-            </div>
+            
+            @if($products->count() > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @foreach($products as $product)
+                        <x-product-card :product="$product" />
+                    @endforeach
+                </div>
+                
+                <!-- Pagination -->
+                <div class="mt-8">
+                    {{ $products->links() }}
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <p class="text-gray-500 text-lg">No new arrivals at the moment.</p>
+                </div>
+            @endif
         </div>
     </section>
 

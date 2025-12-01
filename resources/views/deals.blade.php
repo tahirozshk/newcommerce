@@ -64,29 +64,28 @@
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-3xl font-bold text-gray-900">All Deals</h2>
                 <div class="flex gap-2">
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">All</button>
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">50%+ Off</button>
-                    <button class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">30-50% Off</button>
+                    <a href="{{ route('deals', ['discount_min' => '']) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ !request('discount_min') ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">All</a>
+                    <a href="{{ route('deals', ['discount_min' => 50]) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ request('discount_min') == 50 ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">50%+ Off</a>
+                    <a href="{{ route('deals', ['discount_min' => 30, 'discount_max' => 50]) }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 {{ request('discount_min') == 30 && request('discount_max') == 50 ? 'bg-[#FF6B35] text-white border-[#FF6B35]' : '' }}">30-50% Off</a>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @php
-                    $dealsProducts = [
-                        ['name' => 'Premium Wireless Headphones', 'price' => 299.99, 'original_price' => 399.99, 'rating' => 4.8, 'reviews' => 124, 'category' => 'Electronics', 'badge' => 'Best Seller', 'discount' => 25, 'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop'],
-                        ['name' => 'Ultra Slim Laptop Pro', 'price' => 1299.99, 'original_price' => 1733.32, 'rating' => 4.9, 'reviews' => 89, 'category' => 'Electronics', 'badge' => 'Hot Deal', 'discount' => 25, 'image' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop'],
-                        ['name' => 'Professional Camera Kit', 'price' => 899.99, 'original_price' => 1084.33, 'rating' => 4.5, 'reviews' => 67, 'category' => 'Electronics', 'badge' => 'Limited Edition', 'discount' => 17, 'image' => 'https://images.unsplash.com/photo-1516035069371-86a097c516cf?w=300&h=300&fit=crop'],
-                        ['name' => 'Urban Travel Backpack', 'price' => 79.99, 'original_price' => 99.99, 'rating' => 4.4, 'reviews' => 145, 'category' => 'Fashion', 'badge' => 'Hot Deal', 'discount' => 20, 'image' => 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop'],
-                        ['name' => 'Flagship Smartphone', 'price' => 999.99, 'original_price' => 1111.10, 'rating' => 4.9, 'reviews' => 312, 'category' => 'Electronics', 'badge' => 'Best Seller', 'discount' => 10, 'image' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop'],
-                        ['name' => 'Performance Running Shoes', 'price' => 129.99, 'original_price' => 199.99, 'rating' => 4.6, 'reviews' => 198, 'category' => 'Sports', 'badge' => 'Hot Deal', 'discount' => 35, 'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=300&fit=crop'],
-                        ['name' => 'Designer Sunglasses', 'price' => 159.99, 'original_price' => 229.99, 'rating' => 4.7, 'reviews' => 92, 'category' => 'Fashion', 'badge' => 'New Arrival', 'discount' => 30, 'image' => 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300&h=300&fit=crop'],
-                        ['name' => 'Smart Coffee Maker', 'price' => 149.99, 'original_price' => 199.99, 'rating' => 4.6, 'reviews' => 134, 'category' => 'Home & Living', 'badge' => 'Hot Deal', 'discount' => 25, 'image' => 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=300&h=300&fit=crop'],
-                    ];
-                @endphp
-
-                @foreach($dealsProducts as $product)
-                    <x-product-card :product="$product" />
-                @endforeach
-            </div>
+            
+            @if($products->count() > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @foreach($products as $product)
+                        <x-product-card :product="$product" />
+                    @endforeach
+                </div>
+                
+                <!-- Pagination -->
+                <div class="mt-8">
+                    {{ $products->links() }}
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <p class="text-gray-500 text-lg">No deals available at the moment.</p>
+                </div>
+            @endif
         </div>
     </section>
 @endsection

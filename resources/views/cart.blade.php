@@ -19,37 +19,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Cart Items -->
                 <div class="lg:col-span-2">
-                    @php
-                        $cartItems = [
-                            [
-                                'id' => 1,
-                                'name' => 'Premium Wireless Headphones',
-                                'price' => 299.99,
-                                'original_price' => 399.99,
-                                'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop',
-                                'quantity' => 2,
-                                'discount' => 25
-                            ],
-                            [
-                                'id' => 2,
-                                'name' => 'Ultra Slim Laptop Pro',
-                                'price' => 1299.99,
-                                'original_price' => 1733.32,
-                                'image' => 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&h=300&fit=crop',
-                                'quantity' => 1,
-                                'discount' => 25
-                            ],
-                            [
-                                'id' => 3,
-                                'name' => 'Smart Watch Series X',
-                                'price' => 399.99,
-                                'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop',
-                                'quantity' => 1
-                            ],
-                        ];
-                    @endphp
-
-                    @if(count($cartItems) > 0)
+                    @if(!empty($cartItems) && count($cartItems) > 0)
                         @foreach($cartItems as $item)
                             <div class="bg-white border-b border-gray-200 py-6">
                                 <div class="flex flex-col md:flex-row gap-6">
@@ -78,11 +48,15 @@
                                                     <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $item['name'] }}</h3>
                                                     <p class="text-xs text-gray-500">Reference: {{ $item['reference'] ?? 'REF-' . $item['id'] }}</p>
                                                 </div>
-                                                <button onclick="removeItem({{ $item['id'] }})" class="text-gray-400 hover:text-red-600 transition-colors">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                    </svg>
-                                                </button>
+                                                <form method="POST" action="{{ route('cart.remove', ['product' => $item['id']]) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
                                             </div>
 
                                             <!-- Stock Warning -->
@@ -104,14 +78,19 @@
                                                 <span class="text-gray-500">Size:</span>
                                                 <span class="font-semibold text-gray-900 ml-1">{{ $item['size'] ?? 'M' }}</span>
                                             </div>
-                                            <div class="flex items-center gap-2">
+                                            <form method="POST" action="{{ route('cart.update', ['product' => $item['id']]) }}" class="flex items-center gap-2">
+                                                @csrf
                                                 <span class="text-gray-500">Quantity:</span>
                                                 <div class="flex items-center border border-gray-300 rounded">
-                                                    <button onclick="updateQuantity({{ $item['id'] }}, -1)" class="px-2 py-1 hover:bg-gray-100 transition-colors text-gray-600">-</button>
-                                                    <span class="px-3 py-1 min-w-[2rem] text-center text-gray-900">{{ $item['quantity'] }}</span>
-                                                    <button onclick="updateQuantity({{ $item['id'] }}, 1)" class="px-2 py-1 hover:bg-gray-100 transition-colors text-gray-600">+</button>
+                                                    <button type="button" onclick="changeCartQuantity(this, -1)" class="px-2 py-1 hover:bg-gray-100 transition-colors text-gray-600">-</button>
+                                                    <input type="number"
+                                                           name="quantity"
+                                                           value="{{ $item['quantity'] }}"
+                                                           min="1"
+                                                           class="w-16 text-center border-0 focus:ring-0">
+                                                    <button type="button" onclick="changeCartQuantity(this, 1)" class="px-2 py-1 hover:bg-gray-100 transition-colors text-gray-600">+</button>
                                                 </div>
-                                            </div>
+                                            </form>
                                         </div>
 
                                         <!-- Shipping Info -->
@@ -136,7 +115,7 @@
                                 </div>
                             </div>
                         @endforeach
-                    @else
+                        @else
                         <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-12 text-center">
                             <svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -154,17 +133,6 @@
                 <div class="lg:col-span-1">
                     <div class="bg-white border border-gray-200 p-6 sticky top-24">
                         <h2 class="text-xl font-bold text-gray-900 mb-6">SUMMARY</h2>
-                        
-                        @php
-                            $subtotal = 0;
-                            $totalShipping = 0;
-                            foreach($cartItems as $item) {
-                                $subtotal += $item['price'] * $item['quantity'];
-                                $totalShipping += ($item['shipping_cost'] ?? 8.00) * $item['quantity'];
-                            }
-                            $tax = $subtotal * 0.1;
-                            $total = $subtotal + $totalShipping + $tax;
-                        @endphp
                         
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between text-gray-600">
@@ -217,18 +185,13 @@
 
 @push('scripts')
 <script>
-    function updateQuantity(itemId, change) {
-        // In real app, this would make an API call
-        console.log('Update quantity for item', itemId, 'by', change);
-        // For now, just reload or update UI
-    }
-
-    function removeItem(itemId) {
-        if (confirm('Are you sure you want to remove this item from your cart?')) {
-            // In real app, this would make an API call
-            console.log('Remove item', itemId);
-            // For now, just reload or update UI
-        }
+    function changeCartQuantity(button, delta) {
+        const form = button.closest('form');
+        const input = form.querySelector('input[name=\"quantity\"]');
+        const current = parseInt(input.value || '1', 10);
+        const next = Math.max(1, current + delta);
+        input.value = next;
+        form.submit();
     }
 </script>
 @endpush
